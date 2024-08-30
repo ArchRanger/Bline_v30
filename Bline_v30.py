@@ -35,7 +35,7 @@ def siyah(alan, alan_no):
     for contour in contours:
         area = cv2.contourArea(contour)
 
-        if area > 50:
+        if area > 60:
             cv2.drawContours(alan, [contour], -1, (0, 255, 0), 2)
             x, y, w, h = cv2.boundingRect(contour)
 
