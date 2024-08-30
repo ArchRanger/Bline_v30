@@ -116,7 +116,7 @@ while True:
 
     print(matrisler)
 
-    cv2.imshow("YARRAK", photo)
+    cv2.imshow("AGV_1.", photo)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
