@@ -18,7 +18,7 @@ def siyah(alan, alan_no):
     gray = cv2.cvtColor(alan, cv2.COLOR_BGR2GRAY)
 
     lower_black = 0
-    upper_black = 50
+    upper_black = 30
 
     mask = cv2.inRange(gray, lower_black, upper_black)
     black_pixels = cv2.bitwise_and(alan, alan, mask=mask)
@@ -35,7 +35,7 @@ def siyah(alan, alan_no):
     for contour in contours:
         area = cv2.contourArea(contour)
 
-        if area > 40:
+        if area > 50:
             cv2.drawContours(alan, [contour], -1, (0, 255, 0), 2)
             x, y, w, h = cv2.boundingRect(contour)
 
@@ -45,20 +45,7 @@ def siyah(alan, alan_no):
             section_indexH = center_y // section_height
             section_indexW = center_x // section_width
 
-            # if section_indexH > 2:
-            #     section_indexH = 2
-            # elif section_indexH < 0:
-            #     section_indexH = 0
-            #
-            # if section_indexW > 2:
-            #     section_indexW = 2
-            # elif section_indexW < 0:
-            #     section_indexW = 0
-
-            # if section_indexH == 1:
-            #     matris[[1][section_indexW]] = 1
-            # if section_indexH == 0 or section_indexH == 2:
-            #     matris[section_indexH] = 1
+            
             matris[alan_no] = 1
 
             print(f"Koordinatlar: {center_x}, {center_y}")
@@ -104,14 +91,6 @@ while True:
     for alan in alanlist:
         siyah(alan, count)
         count = count + 1
-
-    # siyah(alan0, 0)
-    # siyah(alan1, 1)
-    # siyah(alan2, 2)
-    # siyah(alan3, 3)
-    # siyah(alan4, 4)
-
-
 
 
     print(matrisler)
