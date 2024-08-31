@@ -35,16 +35,14 @@ def siyah(alan, alan_no):
 
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    section_height = alan.shape[0] // 3  # Yükseklik
-    section_width = alan.shape[1] // 3  # Genişlik
-    matris = [0, 0, 0, 0, 0]
+    # Yalnızca en büyük konturu seç
+    if contours:
+        largest_contour = max(contours, key=cv2.contourArea)
+        area = cv2.contourArea(largest_contour)
 
-    for contour in contours:
-        area = cv2.contourArea(contour)
-
-        if area > 60:
-            cv2.drawContours(alan, [contour], -1, (0, 255, 0), 2)
-            x, y, w, h = cv2.boundingRect(contour)
+        if area > 60:  # Alanın belirli bir değerin üzerinde olmasını sağla
+            cv2.drawContours(alan, [largest_contour], -1, (0, 255, 0), 2)
+            x, y, w, h = cv2.boundingRect(largest_contour)
 
             center_x = x + w // 2  # Sınırlayıcı kutunun merkezi
             center_y = y + h // 2
@@ -52,12 +50,13 @@ def siyah(alan, alan_no):
             section_indexH = center_y // section_height
             section_indexW = center_x // section_width
 
-            
             matris[alan_no] = 1
 
             print(f"Koordinatlar: {center_x}, {center_y}")
 
             cv2.circle(alan, (center_x, center_y), 5, (0, 0, 255), -1)
+    else:
+        matris[alan_no] = 0  # Eğer kontur yoksa matris değeri sıfır olmalı
 
     global matrisler
 
