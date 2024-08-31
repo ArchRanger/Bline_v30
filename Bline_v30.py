@@ -1,5 +1,6 @@
 import cv2
 import time
+import serial  # UART için seri kütüphanesi
 import paho.mqtt.client as mqtt
 
 # MQTT ayarları
@@ -9,6 +10,9 @@ topic = "rotayon"
 
 client = mqtt.Client("AGV")
 client.connect(broker_address, port)
+
+# UART ayarları
+uart = serial.Serial("/dev/serial0", baudrate=9600, timeout=1)  # Raspberry Pi'de UART kullanımı
 
 cap = cv2.VideoCapture(0)
 cap.set(3, 320)
@@ -85,10 +89,26 @@ def durum_gonder(matris):
         print(f"Durum: {durum}")
         client.publish(topic, durum)
 
+
+def uart_veri_isle(veri):
+    # Gelen veriyi kontrol et ve işle
+    if veri in ['1', '2', '3', '4', '5']:
+        # Diğer Arduino'ya gönder
+        uart.write(veri.encode())
+        print(f"Veri gönderildi: {veri}")
+        
+        # Aynı zamanda MQTT'ye de gönder
+        client.publish(topic, f"Veri: {veri}")
+
 while True:
     ret, photo = cap.read()
     if not ret:
         break
+
+    # UART verisini oku
+    if uart.in_waiting > 0:
+        gelen_veri = uart.read().decode().strip()
+        uart_veri_isle(gelen_veri)
 
     photo = cv2.flip(photo, 1)  # Mirror
     kernel_size = (5, 5)
