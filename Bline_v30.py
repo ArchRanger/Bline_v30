@@ -35,6 +35,9 @@ def siyah(alan, alan_no):
 
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+    # matris değişkenini fonksiyonun başında tanımla
+    matris = [0, 0, 0, 0, 0]
+
     # Yalnızca en büyük konturu seç
     if contours:
         largest_contour = max(contours, key=cv2.contourArea)
@@ -47,23 +50,21 @@ def siyah(alan, alan_no):
             center_x = x + w // 2  # Sınırlayıcı kutunun merkezi
             center_y = y + h // 2
 
-            section_indexH = center_y // section_height
-            section_indexW = center_x // section_width
+            section_height = alan.shape[0] // 3  # Yükseklik
+            section_width = alan.shape[1] // 3  # Genişlik
 
             matris[alan_no] = 1
 
             print(f"Koordinatlar: {center_x}, {center_y}")
 
             cv2.circle(alan, (center_x, center_y), 5, (0, 0, 255), -1)
-    else:
-        matris[alan_no] = 0  # Eğer kontur yoksa matris değeri sıfır olmalı
 
     global matrisler
-
     matrisler[alan_no] = matris[alan_no]
 
     stop_time = time.time()
     print("Süre: ", stop_time - start_time)
+
 
 def durum_gonder(matris):
     durum = None
